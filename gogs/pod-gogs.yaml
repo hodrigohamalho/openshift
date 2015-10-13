@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gogs
+  labels: 
+    name: gogs
+spec: 
+  containers: 
+    - image: gogs/gogs:0.6.15
+      name: gogs
+      ports: 
+        - containerPort: 3000
+          name: gogs
+      volumeMounts:
+        - name: gogs-data-storage 
+          mountPath: /data 
+  volumes:
+    - name: gogs-data-storage 
+      persistentVolumeClaim:
+       claimName: claim-gogs-data  
