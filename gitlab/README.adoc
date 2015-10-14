@@ -1,0 +1,82 @@
+= Gitlab
+
+Execute the steps above with a *non root* user.
+Preferably accessing it remotely using openshift client.
+
+== Creating from dockerhub image
+  oc new-app gitlab/gitlab-ce:8.0.3-ce.1 -l 'region=cidi,app=gitlab-ce'
+
+== Volumes
+
+Inside the node *master*, with *root* execute:
+
+=== Creating NFS/PV and PVC
+  ./create-nfs-storage gitlab-log 2 cidi
+  ./create-nfs-storage gitlab-etc 1 cidi
+  ./create-nfs-storage gitlab-opt 10 cidi
+
+After that the result of *showmount -e* should be something like
+
+  [root@master ~]# showmount -e
+  Export list for master.devops.org:
+  /var/export/gitlab-log     *
+  /var/export/gitlab-opt     *
+  /var/export/gitlab-etc     *
+
+=== Bound volumes to Gitlab
+With a *non-root* user execute:
+
+  oc volume dc/gitlab-ce --add --overwrite -t persistentVolumeClaim \
+  --claim-name=gitlab-claim-etc --name=gitlab-ce-volume-1
+
+  oc volume dc/gitlab-ce --add --overwrite -t persistentVolumeClaim \
+  --claim-name=gitlab-claim-log --name=gitlab-ce-volume-2
+
+  oc volume dc/gitlab-ce --add --overwrite -t persistentVolumeClaim \
+  --claim-name=gitlab-claim-opt --name=gitlab-ce-volume-3
+
+== Expose service to external access
+  oc expose service gitlab-ce
+
+== Setting external_url
+Remember to replace the url domain to yours.
+
+=== Join on container
+
+  oc exec -it gitlab-ce-4-hr71q /bin/sh
+
+=== Add external url content to gitlab.rb file
+
+  echo "external_url 'http://gitlab-ce-cidi.cloud.devops.org'" >> /etc/gitlab/gitlab.rb
+
+=== Restart gitlab
+
+  gitlab-ctl reconfigure
+
+== Github Integration
+
+  http://doc.gitlab.com/ce/integration/github.html
+
+==== Solving 502 error
+
+Openshift balancer send requests to sshd gitlab service,
+so one request return success (200), the next request error (502).
+To solve it, remove sshd port from service.
+
+ sudo edit svc gitlab-ce
+
+Content to be erased (something like):
+
+  ports:
+    - name: 22-ssh
+      nodePort: 0
+      port: 22
+      protocol: TCP
+      targetPort: 0
+
+
+=== Useful links:
+
+* https://gitlab.com/gitlab-org/omnibus-gitlab/blob/629def0a7a26e7c2326566f0758d4a27857b52a3/README.md#configuring-the-external-url-for-gitlab
+* https://hub.docker.com/r/gitlab/gitlab-ce/
+* https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/docker/README.md
