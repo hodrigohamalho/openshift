@@ -4,14 +4,17 @@
 
 === Jenkins (Redhat registry)
 
-  oc new-app jenkins-1-rhel7 -l -e "JENKINS_PASSWORD=redhat" -l "region=cidi,app=jenkins-redhat"
+  oc new-app jenkins-1-rhel7 -l \
+             -e "JENKINS_PASSWORD=redhat" \
+             -l "region=cidi,app=jenkins-redhat"
 
 ==== Expose service to external access
   oc expose service jenkins-1-rhel7
 
 === Jenkins (docker.io registry)
 
-  oc new-app docker.io/jenkins -l "region=cidi,app=jenkins"
+  oc new-app docker.io/jenkins \
+             -l "region=cidi,app=jenkins"
 
 == Volumes
 
@@ -29,14 +32,18 @@ After that the result of *showmount -e* should be something like
 === Bound volumes to Jenkins (Red Hat)
 With a *non-root* user execute:
 
-  oc volume dc/jenkins-1-rhel7 --add --overwrite -t persistentVolumeClaim \
-  --claim-name=claim-jenkins --name=jenkins-1-rhel7-volume-1
+  oc volume dc/jenkins-1-rhel7 \
+            --add --overwrite -t persistentVolumeClaim \
+            --claim-name=claim-jenkins \
+            --name=jenkins-1-rhel7-volume-1
 
 === Bound volumes to Jenkins (From docker.io)
 With a *non-root* user execute:
 
-  oc volume dc/jenkins --add --overwrite -t persistentVolumeClaim \
-  --claim-name=claim-jenkins --name=jenkins-volume-1
+  oc volume dc/jenkins \
+            --add --overwrite -t persistentVolumeClaim \
+            --claim-name=claim-jenkins \
+            --name=jenkins-volume-1
 
 == Configuration
 http://jenkins-1-rhel7-cidi.cloud.devops.org/configure
