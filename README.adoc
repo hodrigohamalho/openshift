@@ -1,3 +1,11 @@
 = Guide to Devops using Openshift V3
 
+Volume instructions use link:create-storage.sh[] script to create nfs,
+persistence volume and persistence volume claim. If you prefer to
+create without the scripts the files .yaml is available on each directory.
+
+It can be created using:
+
+  oc create -f <file>
+
 == link:gitlab/README.adoc[Gitlab]
