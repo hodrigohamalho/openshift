@@ -8,5 +8,6 @@ It can be created using:
 
   oc create -f <file>
 
-== link:gitlab/README.adoc[Gitlab]
-== link:jenkins/README.adoc[Jenkins]
+== link:nexus/README.adoc[Gitlab Instructions]
+== link:gitlab/README.adoc[Gitlab Instructions]
+== link:jenkins/README.adoc[Jenkins Instructions]

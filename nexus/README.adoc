@@ -1,0 +1,74 @@
+= Nexus
+
+== Creating from dockerhub image
+  oc new-app docker.io/sonatype/nexus -l \
+             'region=cidi,app=nexus'
+
+==== Expose service to external access
+  oc expose service nexus
+
+== Volumes
+
+Inside the node *master*, with *root* execute:
+
+=== Creating NFS/PV and PVC
+  ./create-nfs-storage nexus 15 cidi
+
+After that the result of *showmount -e* should be something like
+
+  [root@master ~]# showmount -e
+  Export list for master.devops.org:
+  /var/export/jenkins     *
+
+=== Bound volumes to Nexus
+With a *non-root* user execute:
+
+oc volume dc/nexus \
+          --add --overwrite -t persistentVolumeClaim \
+          --claim-name=claim-nexus --name=nexus-volume-1
+
+The container(POD) will be redeployed.
+
+== Configuration
+http://nexus-cidi.cloud.devops.org/
+
+* Login: admin
+* Password: admin123
+
+=== Add JBoss repositories
+On *Repositories* menu
+
+=== Click on Proxy Repository
+
+image::images/nexus-add-repo.png[]
+
+=== Add Early Access Repository
+
+image::images/nexus-earlyaccess-repo.png[]
+
+=== Add Jboss Public Repository
+
+image::images/nexus-public-repo.png[]
+
+=== Add Jboss Techpreview Repository
+
+image::images/nexus-techpreview-repo.png[]
+
+=== Add Jboss Repositories to Public
+
+image::images/nexus-add-all-to-public.png[]
+
+== Maven configuration (Developers Machine)
+
+All developers should put the file link:settings.xml[] in directory:
+~/.m2/
+
+== Testing
+
+  git clone https://github.com/hodrigohamalho/simplest-webapp
+  cd simplest-webapp
+  mvn clean install
+
+The libs must be downloaded from your nexus server.
+
+image::images/nexus-test.png[]
