@@ -6,6 +6,9 @@ Preferably accessing it remotely using openshift client.
 == Creating from dockerhub image
   oc new-app gitlab/gitlab-ce:8.0.3-ce.1 -l 'region=cidi,app=gitlab-ce'
 
+== Expose service to external access
+  oc expose service gitlab-ce
+  
 == Volumes
 
 Inside the node *master*, with *root* execute:
@@ -34,9 +37,6 @@ With a *non-root* user execute:
 
   oc volume dc/gitlab-ce --add --overwrite -t persistentVolumeClaim \
   --claim-name=gitlab-claim-opt --name=gitlab-ce-volume-3
-
-== Expose service to external access
-  oc expose service gitlab-ce
 
 == Setting external_url
 Remember to replace the url domain to yours.

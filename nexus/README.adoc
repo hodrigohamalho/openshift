@@ -23,7 +23,7 @@ After that the result of *showmount -e* should be something like
 === Bound volumes to Nexus
 With a *non-root* user execute:
 
-oc volume dc/nexus \
+  oc volume dc/nexus \
           --add --overwrite -t persistentVolumeClaim \
           --claim-name=claim-nexus --name=nexus-volume-1
 
@@ -61,7 +61,7 @@ image::images/nexus-add-all-to-public.png[]
 == Maven configuration (Developers Machine)
 
 All developers should put the file link:settings.xml[] in directory:
-~/.m2/
+*~/.m2/*
 
 == Testing
 

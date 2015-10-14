@@ -92,3 +92,8 @@ cp settings.xml /var/export/jenkins/
 image::images/jenkins-nexus-integration.png[]
 
 The file path is different because it is relative to the mapping inside the container.
+
+== Useful links
+
+* https://github.com/openshift/jenkins
+* https://hub.docker.com/_/jenkins/
