@@ -61,6 +61,34 @@ Access configuration url: http://jenkins-cidi.cloud.devops.org/configure
 
 image::images/jenkins-jdk.png[]
 
+==== ADD GIT
+
+image::images/jenkins-jdk.png[]
+
 ==== ADD MAVEN
 
 image::images/jenkins-maven.png[]
+
+== Testing
+
+image::images/jenkins-creatingapp1.png[]
+image::images/jenkins-creatingapp2.png[]
+image::images/jenkins-creatingapp3.png[]
+image::images/jenkins-creatingapp4.png[]
+image::images/jenkins-creatingapp5.png[]
+image::images/jenkins-creatingapp7.png[]
+image::images/jenkins-creatingapp8.png[]
+image::images/jenkins-creatingapp9.png[]
+image::images/jenkins-creatingapp10.png[]
+
+== Integration with Nexus
+To enable jenkins to use nexus to manage components on build proccess,
+you must point maven configuration to use link:settings.xml[]
+
+On Master node:
+
+cp settings.xml /var/export/jenkins/
+
+image::images/jenkins-nexus-integration.png[]
+
+The file path is different because it is relative to the mapping inside the container.
