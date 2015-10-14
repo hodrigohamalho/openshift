@@ -74,6 +74,12 @@ Content to be erased (something like):
       protocol: TCP
       targetPort: 0
 
+== Enjoy your Gitlab Repository
+
+http://gitlab-ce-cidi.cloud.devops.org/
+
+* User: root
+* Password: 5iveL!fe
 
 === Useful links:
 
