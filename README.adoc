@@ -55,7 +55,7 @@ This guide use three projects, simulating *dev*, *qa* and *cidi* environments.
 
 == Volumes
 Volume instructions in this guide, use link:create-storage.sh[]
-script to create nfs, persistence volume and persistence volume claim.
+script to create *nfs*, *(p)ersistence (v)olume* and *(p)ersistence (v)olume (c)laim*.
 If you prefer to create without the scripts, the files .yaml is available
 on each directory.
 
