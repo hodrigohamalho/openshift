@@ -1,12 +1,12 @@
 = Guide to Devops using Openshift V3
 
-Volume instructions use link:create-storage.sh[] script to create nfs,
-persistence volume and persistence volume claim. If you prefer to
-create without the scripts the files .yaml is available on each directory.
+== Objective
+On the final of this guide, you will have a integrated
+environment using openshift.
 
-It can be created using:
-
-  oc create -f <file>
+* Gitlab (Git Server)
+* Maven Nexus
+* Jenkins
 
 == Prerequisites
 This guide assume that you know the basics openshift concepts.
@@ -52,6 +52,18 @@ This guide use three projects, simulating *dev*, *qa* and *cidi* environments.
   oc label --overwrite node node01.devops.org region="dsv" zone="primary"
 
 == Image overview
+image::images/openshift-topology.png[]
+
+== Volumes
+Volume instructions in this guide, use link:create-storage.sh[]
+script to create nfs, persistence volume and persistence volume claim.
+If you prefer to create without the scripts, the files .yaml is available
+on each directory.
+
+It can be created using:
+
+  oc create -f <file>
+
 
 == link:nexus/README.adoc[Nexus Instructions]
 == link:gitlab/README.adoc[Gitlab Instructions]
