@@ -1,9 +1,9 @@
 = Guide to Devops using Openshift V3
 
 == Objective
-On the final of this guide, you will have a integrated
-environment using openshift.
+Create an example of DevOps environment, using the technologies below:
 
+* Openshift V3
 * Gitlab (Git Server)
 * Maven Nexus
 * Jenkins
