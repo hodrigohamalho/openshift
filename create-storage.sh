@@ -16,15 +16,10 @@ SIZE=$2
 PROJECT=$3
 ROOT_NFS=/var/export
 HOST=master.devops.org
-SSH_USER=root
 
 die () {
     echo >&2 "$@"
     exit 1
-}
-
-execute-ssh () {
-	ssh $SSH_USER@$HOST "$1"
 }
 
 create-pv () {
