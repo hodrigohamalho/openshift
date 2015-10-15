@@ -8,7 +8,7 @@ Preferably accessing it remotely using openshift client.
 
 == Expose service to external access
   oc expose service gitlab-ce
-  
+
 == Volumes
 
 Inside the node *master*, with *root* execute:
@@ -80,6 +80,8 @@ http://gitlab-ce-cidi.cloud.devops.org/
 
 * User: root
 * Password: 5iveL!fe
+
+image::images/gitlab.png[]
 
 === Useful links:
 
