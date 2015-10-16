@@ -4,7 +4,7 @@
 Create an example of DevOps environment, using the technologies below:
 
 * Openshift V3
-* Gitlab (Git Server)
+* Gitlab
 * Maven Nexus
 * Jenkins
 
@@ -12,7 +12,7 @@ image::images/openshift-topology.png[]
 
 == Prerequisites
 This guide assume that you know the basics openshift concepts.
-If not, check the http://github.com/openshift/training
+If not, check this training: http://github.com/openshift/training
 
 == Accessing remotely
 NOTE: Evict to execute commands inside the nodes (mainly on master node).
@@ -49,9 +49,9 @@ This guide use three projects, simulating *dev*, *qa* and *cidi* environments.
 
 == Topology (Regions and Zones)
 
-  oc label --overwrite node master.devops.org region="infra" zone="default"
-  oc label --overwrite node node02.devops.org region="hmg" zone="primary"
-  oc label --overwrite node node01.devops.org region="dsv" zone="primary"
+  oc label node master.devops.org region="infra" zone="default"
+  oc label node node02.devops.org region="hmg" zone="primary"
+  oc label node node01.devops.org region="dsv" zone="primary"
 
 == Volumes
 Volume instructions in this guide, use link:create-storage.sh[]

@@ -1,6 +1,6 @@
 = Jenkins
 
-== Creating from dockerhub image
+== Building from dockerhub image
 
 === Jenkins (Redhat registry)
 
@@ -58,8 +58,8 @@ http://jenkins-1-rhel7-cidi.cloud.devops.org/configure
 === Plugins
 Access plugins url: http://jenkins-cidi.cloud.devops.org/pluginManager/available
 
-* On filter type: *github*
-* Select *Github client*
+. Github
+. Gitlab Web Hook
 
 === Global configuration
 Access configuration url: http://jenkins-cidi.cloud.devops.org/configure
