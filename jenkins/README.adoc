@@ -8,13 +8,20 @@
              -e "JENKINS_PASSWORD=redhat" \
              -l "region=cidi,app=jenkins-redhat"
 
-==== Expose service to external access
-  oc expose service jenkins-1-rhel7
-
 === Jenkins (docker.io registry)
 
   oc new-app docker.io/jenkins \
              -l "region=cidi,app=jenkins"
+
+=== Expose service to external access
+
+If you choose from Red Hat registry:
+
+  oc expose service jenkins-1-rhel7
+
+From docker.io:
+
+  oc expose service jenkins
 
 == Volumes
 
@@ -68,6 +75,11 @@ image::images/jenkins-jdk.png[]
 ==== ADD MAVEN
 
 image::images/jenkins-maven.png[]
+
+== Fixing bugs
+=== Remove port 5000 from service
+  oc edit service jenkins
+
 
 == Testing
 

@@ -83,8 +83,46 @@ http://gitlab-ce-cidi.cloud.devops.org/
 
 image::images/gitlab.png[]
 
+== Integration with Jenkins
+. Create a new repository called simplest-webapp
+  http://gitlab-ce-cidi.cloud.devops.org/projects/new
+. Clone github repository on your local machine https://github.com/hodrigohamalho/simplest-webapp
+
+  cd simplest-webapp
+  rm -rf .git
+  git init
+  git add .
+  git commit -am 'Uploading simplest-webapp project'
+  # Change the domain and username from url
+  git remote add origin http://gitlab-ce-cidi.cloud.devops.org/rramalho/simplest-webapp
+  git push origin master
+
+. Configure Web Hook
+It will notify Jenkins whenever a commit is maded on this project
+
+image::images/gitlab-webhook-1.png[]
+image::images/gitlab-webhook-2.png[]
+
+=== Jenkins
+Create a maven project pointing to gitlab project.
+
+image::../jenkins/images/jenkins-gitlab1.png[]
+image::../jenkins/images/jenkins-gitlab2.png[]
+image::../jenkins/images/jenkins-gitlab3.png[]
+
+=== Testing
+On your simplest-webapp directory make any modification and commit/push.
+
+  cd simplest-webapp
+  echo "Testing integration (please work, please...)" >> README.adoc
+  git commit -am 'Testing integration'
+  git push origin master
+
+Look at jenkins dashboard, project should be bulding.
+
 === Useful links:
 
 * https://gitlab.com/gitlab-org/omnibus-gitlab/blob/629def0a7a26e7c2326566f0758d4a27857b52a3/README.md#configuring-the-external-url-for-gitlab
 * https://hub.docker.com/r/gitlab/gitlab-ce/
 * https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/docker/README.md
+* http://doc.gitlab.com/ce/integration/github.html

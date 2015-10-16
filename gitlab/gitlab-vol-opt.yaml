@@ -4,11 +4,11 @@ metadata:
   name: gitlab-opt
 spec:
   capacity:
-    storage: 10Gi
+    storage: 5Gi
   accessModes:
     - ReadWriteOnce
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Recycle
   nfs:
-    server: master.devops.org
+    server: s01lab06.sulamerica.br
     path: /var/export/gitlab-opt

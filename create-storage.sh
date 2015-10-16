@@ -15,7 +15,7 @@ DIR=$1
 SIZE=$2
 PROJECT=$3
 ROOT_NFS=/var/export
-HOST=master.devops.org
+HOST=$(hostname)
 
 die () {
     echo >&2 "$@"
