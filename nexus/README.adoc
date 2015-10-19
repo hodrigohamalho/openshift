@@ -1,7 +1,7 @@
 = Nexus
 
 == Creating from dockerhub image
-  oc new-app docker.io/sonatype/nexus -l \
+  oc new-app sonatype/nexus -l \
              'region=cidi,app=nexus'
 
 ==== Expose service to external access

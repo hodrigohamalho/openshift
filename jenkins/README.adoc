@@ -80,6 +80,14 @@ image::images/jenkins-maven.png[]
 === Remove port 5000 from service
   oc edit service jenkins
 
+Remove this:
+
+  -- name: 50000-tcp
+  nodePort: 0
+  port: 50000
+  protocol: TCP
+  targetPort: 50000
+
 
 == Testing
 

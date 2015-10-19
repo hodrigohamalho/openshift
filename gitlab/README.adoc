@@ -126,3 +126,4 @@ Look at jenkins dashboard, project should be bulding.
 * https://hub.docker.com/r/gitlab/gitlab-ce/
 * https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/docker/README.md
 * http://doc.gitlab.com/ce/integration/github.html
+* https://help.github.com/articles/adding-an-existing-project-to-github-using-the-command-line/
