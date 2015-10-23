@@ -30,13 +30,13 @@ After that the result of *showmount -e* should be something like
 With a *non-root* user execute:
 
   oc volume dc/gitlab-ce --add --overwrite -t persistentVolumeClaim \
-  --claim-name=gitlab-claim-etc --name=gitlab-ce-volume-1
+  --claim-name=claim-gitlab-etc --name=gitlab-ce-volume-1
 
   oc volume dc/gitlab-ce --add --overwrite -t persistentVolumeClaim \
-  --claim-name=gitlab-claim-log --name=gitlab-ce-volume-2
+  --claim-name=claim-gitlab-log --name=gitlab-ce-volume-2
 
   oc volume dc/gitlab-ce --add --overwrite -t persistentVolumeClaim \
-  --claim-name=gitlab-claim-opt --name=gitlab-ce-volume-3
+  --claim-name=claim-gitlab-opt --name=gitlab-ce-volume-3
 
 == Setting external_url
 Remember to replace the url domain to yours.

@@ -1,0 +1,41 @@
+= Fabric8
+
+== ADD cluster-admin role to user
+  oadm policy add-cluster-role-to-user cluster-admin admin
+
+== Enable CORS
+/etc/openshift/master/master-config.yaml
+
+  corsAllowedOrigins:
+    - .*
+
+== Install goFabric
+
+  sudo rm /tmp/gofabric8
+  sudo rm -rf /usr/bin/gofabric8
+  mkdir /tmp/gofabric8
+  DOWNLOAD_URL=https://github.com/fabric8io/gofabric8/releases/download/v0.3.16/gofabric8-0.3.16-linux-amd64.tar.gz
+  curl --retry 999 --retry-max-time 0  -sSL $DOWNLOAD_URL | tar xzv -C /tmp/gofabric8
+  chmod +x /tmp/gofabric8/gofabric8
+  sudo mv /tmp/gofabric8/* /usr/bin/
+
+== Installing Fabric8
+
+  oc login -u system:admin
+  oc new-project integration
+  gofabric8 -s https://master.devops.org:8443 --domain=cloud.devops.org deploy
+  gofabric8 secrets -y
+  gofabric8 validate
+  gofabric8 pull cd-pipeline
+
+== Fixing Auth URL
+
+  oc exec -it fabric8-pod /bin/bash
+  vi osconsole/config.js
+  oauth_authorize_uri: "https://master.cloud.devops.org:8443/oauth/authorize",
+
+== Fixing Fabri8-forge
+
+  cd /etc/openshift/master
+  oadm ca create-master-cert --signer-cert=ca.crt --signer-key=ca.key --signer-serial=ca.serial.txt --hostnames='docker-registry.default.svc.cluster.local,kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local,openshift.default,openshift.default.svc,openshift.default.svc.cluster.local,localhost,master.devops.org,cloud.devops.org,node01.devops.org,node02.devops.org' --cert=master.server.crt --key=master.server.key
+  systemctl restart openshift-master

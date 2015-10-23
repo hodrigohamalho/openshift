@@ -28,7 +28,7 @@ From docker.io:
 Inside the node *master*, with *root* execute:
 
 === Creating NFS/PV and PVC
-  ./create-nfs-storage jenkins 5 cidi
+  ./create-storage.sh jenkins 5 cidi
 
 After that the result of *showmount -e* should be something like
 

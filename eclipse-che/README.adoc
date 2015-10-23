@@ -1,0 +1,5 @@
+= Eclipse-che
+
+  oc new-app codenvy/che -l 'app=eclipse'
+
+http://www.eclipse.org/che/

@@ -12,7 +12,7 @@
 Inside the node *master*, with *root* execute:
 
 === Creating NFS/PV and PVC
-  ./create-nfs-storage nexus 15 cidi
+  ./create-storage.sh nexus 15 cidi
 
 After that the result of *showmount -e* should be something like
 
@@ -44,13 +44,25 @@ image::images/nexus-add-repo.png[]
 
 === Add Early Access Repository
 
+* Repository ID: jboss-earlyaccess-repository
+* Repository Name: Jboss Early Access
+* Remote Storage Location: http://maven.repository.redhat.com/earlyaccess/all/
+
 image::images/nexus-earlyaccess-repo.png[]
 
 === Add Jboss Public Repository
 
+* Repository ID: jboss-ga-repository
+* Repository Name: Jboss Public
+* Remote Storage Location: http://repository.jboss.org/nexus/content/groups/public/
+
 image::images/nexus-public-repo.png[]
 
 === Add Jboss Techpreview Repository
+
+* Repository ID: jboss-techpreview
+* Repository Name: Jboss Techpreview
+* Remote Storage Location: http://maven.repository.redhat.com/techpreview/all/
 
 image::images/nexus-techpreview-repo.png[]
 

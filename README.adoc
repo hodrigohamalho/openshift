@@ -63,6 +63,16 @@ It can be created using:
 
   oc create -f <file>
 
+== Relax Security
+
+  oc edit scc
+
+Your output from *oc get scc* should be like this:
+
+  NAME         PRIV      CAPS      HOSTDIR   SELINUX    RUNASUSER
+  privileged   true      []        true      RunAsAny   RunAsAny
+  restricted   false     []        false     RunAsAny   RunAsAny
+
 == link:nexus/README.adoc[Nexus Instructions]
 == link:gitlab/README.adoc[Gitlab Instructions]
 == link:jenkins/README.adoc[Jenkins Instructions]
