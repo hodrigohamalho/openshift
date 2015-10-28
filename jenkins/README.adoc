@@ -115,6 +115,19 @@ image::images/jenkins-nexus-integration.png[]
 
 The file path is different because it is relative to the mapping inside the container.
 
+== Download and copy OC Client (Linux)
+
+https://access.redhat.com/downloads/content/290/ver=3.0.0.0/rhel---7/3.0.2.0/x86_64/product-downloads
+tar -xvzf oc-client.tar.gz
+
+mkdir /var/export/jenkins/bin/
+cp settings.xml /var/export/jenkins/bin/
+cp ca.crt /etc/openshift /var/export/jenkins/secrets/
+
+== Create a new Job
+
+
+
 == Useful links
 
 * https://github.com/openshift/jenkins
