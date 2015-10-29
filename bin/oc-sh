@@ -9,5 +9,5 @@ done
 
 export POD=$(echo $PODNAMES | cut -f 1 -d ' ')
 echo "creating shell on pod: $POD"
-oc exec -it -p $POD sh
+oc exec -it $POD sh
 
