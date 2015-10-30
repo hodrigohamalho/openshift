@@ -10,5 +10,5 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Recycle
   nfs:
-    server: s01lab06.sulamerica.br
+    server: master.devops.org.br
     path: /var/export/gitlab-opt

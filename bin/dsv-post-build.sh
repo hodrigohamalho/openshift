@@ -1,11 +1,11 @@
 #!/bin/bash
 # Envinronment parameters
-#APP_HOSTNAME=gestaoprestador24h-dsv.cloud.devops.org
-#APP_NAME=gestaoprestador24h
-#APP_GIT=http://gitlab-ce-devops.cloud.devops.org/sulamerica/gestaoprestador24h.git
+#APP_HOSTNAME=app-monitor-dsv.cloud.devops.org
+#APP_NAME=app-monitor
+#APP_GIT=http://gitlab-ce-devops.cloud.devops.org/master.devops.org/gestaoprestador24h.git
 #APP_GIT_REF=
 #APP_GIT_CONTEXT_DIR=
-#USER_NAME=sulamerica
+#USER_NAME=master.devops.org
 #OSE_SERVER=https://master.devops.org:8443
 #CERT_PATH=/var/jenkins_home/secrets/ca.crt
 #DEVEL_PROJ_NAME=dsv
