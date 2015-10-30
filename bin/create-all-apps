@@ -4,22 +4,35 @@ echo "To turn this process faster, you should eager download all docker images"
 echo "using download-docker-images.sh on the node that will host all apps"
 echo ""
 
+oc project devops
+
 echo "creating app Nexus..."
 oc new-app sonatype/nexus -l 'app=nexus,region=devops' && \
    oc expose service nexus
 
+create-storage nexus 10 devops
+
 echo "creating app Gitlab-ce"
 oc new-app gitlab/gitlab-ce:8.0.3-ce.1 -l 'app=gitlab-ce,region=devops'
 oc expose service gitlab-ce
+
+create-storage gitlab-etc 1 devops
+create-storage gitlab-log 2 devops
+create-storage gitlab-opt 5 devops
 
 echo "creating app Jenkins"
 oc new-app docker.io/jenkins \
              -l "app=jenkins,region=devops" && \
              oc expose service jenkins
 
+create-storage jenkins 8 devops
+
 echo "creating app cloud eclipse"
 oc new-app codenvy/che -l 'app=eclipse,region=devops' && \
 oc expose service che
+
+echo "Wait, some while..."
+sleep 5
 
 echo "attaching volume to nexus"
 oc volume dc/nexus \
@@ -39,5 +52,3 @@ oc volume dc/jenkins \
             --add --overwrite -t persistentVolumeClaim \
             --claim-name=claim-jenkins \
             --name=jenkins-volume-1
-
-echo "Check the volumes on /var/export"
