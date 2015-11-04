@@ -1,10 +1,15 @@
-#!/bin/bash
-#
-# deletes services, replication controllers and pods which match the given text
+die () {
+    echo >&2 "$@"
+    exit 1
+}
 
-export SERVICENAMES=""
+[ "$#" -eq 1 ] || die "Usage: $0 <project>"
 
-oc-delete-replicationControllers-and-pods $@
-oc-delete-services $@
-
-
+oc project $1
+oc delete pod --all
+oc delete svc --all
+oc delete route --all
+oc delete bc --all
+oc delete build --all
+oc delete is --all
+oc delete dc --all
