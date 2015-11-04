@@ -11,7 +11,6 @@
 #DEVEL_PROJ_NAME=dsv
 #LABELS
 
-
 export PATH=$PATH:/var/jenkins_home/bin
 oc login -u$USER_NAME -p$USER_PASSWD --server=$OSE_SERVER --insecure-skip-tls-verify
 oc project $DEVEL_PROJ_NAME
@@ -19,10 +18,11 @@ oc project $DEVEL_PROJ_NAME
 BUILD_CONFIG=$(oc get bc | tail -1 | awk '{print $1}')
 
 if [ -z "$BUILD_CONFIG" -o $BUILD_CONFIG == "NAME" ]; then
-  echo "Create a new app"
-  oc new-app --name=$APP_NAME --strategy=docker $APP_GIT -l name=$APP_NAME,$LABELS
+  echo "Creating a $APP_NAME app"
+  oc new-app --name=$APP_NAME --strategy=docker $APP_GIT -l name=$APP_NAME,$LABELS &&
+  oc expose service $APP_NAME
 
-echo "Find build id"
+  echo "Find build id"
   BUILD_ID=`oc get builds | tail -1 | awk '{print $1}'`
   rc=1
   attempts=75
@@ -76,8 +76,6 @@ done
 
 # stream the logs for the build that just started
 oc build-logs $BUILD_ID
-
-
 
 echo "Checking build result status"
 rc=1
@@ -159,8 +157,6 @@ if [ $rc -ne 0 ]; then
     echo "Failed to access test deployment, aborting roll out."
     exit 1
 fi
-
-
 ################################################################################
 ##Include development test scripts here and fail with exit 1 if the tests fail##
 ################################################################################
