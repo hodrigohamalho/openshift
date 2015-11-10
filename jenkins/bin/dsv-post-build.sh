@@ -15,21 +15,20 @@ export PATH=$PATH:/var/jenkins_home/bin
 oc login -u$USER_NAME -p$USER_PASSWD --server=$OSE_SERVER --insecure-skip-tls-verify
 oc project $DEVEL_PROJ_NAME
 
-BUILD_CONFIG=$(oc get bc | tail -1 | awk '{print $1}')
+BUILD_CONFIG=$(oc get bc | grep $APP_NAME | awk '{print $1}')
 
-if [ -z "$BUILD_CONFIG" -o $BUILD_CONFIG == "NAME" ]; then
-  echo "Creating a $APP_NAME app"
+if [ -z "$BUILD_CONFIG" ]; then
+  echo "BuildConfig not found, creating $APP_NAME new app"
   oc new-app --name=$APP_NAME --strategy=docker $APP_GIT -l name=$APP_NAME,$LABELS &&
+  echo "Creating route for service $APP_NAME"
   oc expose service $APP_NAME
 
-  echo "Find build id"
-  BUILD_ID=`oc get builds | tail -1 | awk '{print $1}'`
   rc=1
   attempts=75
   count=0
   while [ $rc -ne 0 -a $count -lt $attempts ]; do
-    BUILD_ID=`oc get builds | tail -1 | awk '{print $1}'`
-    if [ $BUILD_ID == "NAME" ]; then
+    BUILD_ID=$(oc get builds | grep $APP_NAME | awk '{print $1}')
+    if [ -z $BUILD_ID ]; then
       count=$(($count+1))
       echo "Attempt $count/$attempts"
       sleep 5
@@ -44,7 +43,8 @@ if [ -z "$BUILD_CONFIG" -o $BUILD_CONFIG == "NAME" ]; then
     exit 1
   fi
 else
-  BUILD_ID=`oc start-build ${BUILD_CONFIG}`
+  echo "BuildConfig exists, starting a new build!"
+  BUILD_ID=$(oc start-build ${BUILD_CONFIG})
 fi
 
 echo "Waiting for build to start"
@@ -52,7 +52,7 @@ rc=1
 attempts=25
 count=0
 while [ $rc -ne 0 -a $count -lt $attempts ]; do
-  status=`oc get build ${BUILD_ID} -t '{{.status.phase}}'`
+  status=$(oc get build ${BUILD_ID} -t '{{.status.phase}}')
   if [[ $status == "Failed" || $status == "Error" || $status == "Canceled" ]]; then
     echo "Fail: Build completed with unsuccessful status: ${status}"
     exit 1
@@ -82,7 +82,7 @@ rc=1
 count=0
 attempts=100
 while [ $rc -ne 0 -a $count -lt $attempts ]; do
-  status=`oc get build ${BUILD_ID} -t '{{.status.phase}}'`
+  status=$(oc get build ${BUILD_ID} -t '{{.status.phase}}')
   if [[ $status == "Failed" || $status == "Error" || $status == "Canceled" ]]; then
     echo "Fail: Build completed with unsuccessful status: ${status}"
     exit 1
@@ -109,7 +109,7 @@ rc=1
 count=0
 attempts=100
 while [ $rc -ne 0 -a $count -lt $attempts ]; do
-  status=`oc get build ${BUILD_ID} -t '{{.status.phase}}'`
+  status=$(oc get build ${BUILD_ID} -t '{{.status.phase}}')
   if [[ $status == "Failed" || $status == "Error" || $status == "Canceled" ]]; then
     echo "Fail: Build completed with unsuccessful status: ${status}"
     exit 1
@@ -131,7 +131,7 @@ if [ $rc -ne 0 ]; then
 fi
 
 # scale up the test deployment
-RC_ID=`oc get rc | tail -1 | awk '{print $1}'`
+RC_ID=`oc get rc | grep $APP_NAME | awk '{print $1}'`
 
 echo "Scaling up new deployment $test_rc_id"
 oc scale --replicas=1 rc $RC_ID
@@ -157,6 +157,11 @@ if [ $rc -ne 0 ]; then
     echo "Failed to access test deployment, aborting roll out."
     exit 1
 fi
-################################################################################
-##Include development test scripts here and fail with exit 1 if the tests fail##
-################################################################################
+
+echo "Evict cache"
+oc get bc $APP_NAME -o yaml > bc-${APP_NAME}.yaml
+if ! grep --quiet noCache bc-${APP_NAME}.yaml; then
+  sed -i '/dockerStrategy/a \ \ \ \ \ \ nocache: true' bc-${APP_NAME}.yaml
+  oc replace -f bc-${APP_NAME}.yaml
+fi
+rm -f bc-${APP_NAME}.yaml

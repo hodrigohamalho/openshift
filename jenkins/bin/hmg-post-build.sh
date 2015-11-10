@@ -1,31 +1,29 @@
 #!/bin/bash
-APP_HOSTNAME=app-hmg.cloud.devops.org
-APP_NAME=app-monitor
-USER_NAME=ramalho
-OSE_SERVER=https://master.devops.org:8443
-CERT_PATH=/var/jenkins_home/secrets/ca.crt
-DEVEL_PROJ_NAME=dev
-QA_PROJ_NAME=qa
-LABELS=app=teste
-USER_PASSWD=redhat
+export PATH=$PATH:/var/jenkins_home/bin
 
-#export PATH=$PATH:/var/jenkins_home/bin
+oc login -u$USER_NAME -p$USER_PASSWD --server=$OSE_SERVER --insecure-skip-tls-verify &&
+echo "Logged as user: $USER_NAME - $OSE_SERVER"
+oc project $DEVEL_PROJ_NAME &&
+echo "Using project $DEVEL_PROJ_NAME"
 
-oc login -u$USER_NAME -p$USER_PASSWD --server=$OSE_SERVER --insecure-skip-tls-verify
-oc project $DEVEL_PROJ_NAME
 IS_NAME=`oc get is| grep $APP_NAME | tail -1 | awk '{print $1}'`
+echo "IS_NAME: $IS_NAME"
 
 #get full name of the image
-FULL_IMAGE_NAME=`oc describe is ${IS_NAME} | grep -a1 "Tag" | tail -1 | awk '{print $6}'`
+FULL_IMAGE_NAME=`oc describe is ${IS_NAME} | grep -a1 "Tag" | tail -1 | awk '{print $6}'` &&
+echo "FULL_IMAGE_NAME: $FULL_IMAGE_NAME"
 
 #Tag to promote to QA
 oc tag $FULL_IMAGE_NAME $DEVEL_PROJ_NAME/${IS_NAME}:promote &&
+echo "oc tag $FULL_IMAGE_NAME $DEVEL_PROJ_NAME/${IS_NAME}:promote"
 
 #This should automatically initiate deployment
-oc project $QA_PROJ_NAME
+oc project $QA_PROJ_NAME &&
+echo "Using project $QA_PROJ_NAME"
 
 #Find the DeploymentConfig to see if this is a new deployment or just needs an update
-DC_ID=`oc get dc --no-headers | grep $APP_NAME | tail -1 | awk '{print $1}'`
+DC_ID=`oc get dc --no-headers | grep $APP_NAME | tail -1 | awk '{print $1}'` &&
+echo "DC_ID: $DC_ID"
 
 echo "DEBUG"
 echo "DEVEL_PROJ_NAME: $DEVEL_PROJ_NAME"
@@ -39,6 +37,7 @@ echo "oc new-app $DEVEL_PROJ_NAME/${IS_NAME}:promote --name=$APP_NAME -l $LABELS
 if [[ -z "$DC_ID" ]]; then
 	oc new-app $DEVEL_PROJ_NAME/${IS_NAME}:promote --name=$APP_NAME -l $LABELS &&
 	SVC_ID=`oc get svc | tail -1 | awk '{print $1}'`
+	echo "SVC_ID: $SVC_ID"
 	oc expose service $SVC_ID --hostname=$APP_HOSTNAME
 fi
 
@@ -48,6 +47,7 @@ attempts=75
 count=0
 while [ -z "$RC_ID" -a $count -lt $attempts ]; do
 	RC_ID=`oc get rc | grep $FULL_IMAGE_NAME | awk '{print $1}'`
+	echo "RC_ID: $RC_ID"
 	count=$(($count+1))
 	sleep 5
 done

@@ -1,0 +1,244 @@
+apiVersion: v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: app-monitor
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    creationTimestamp: null
+    labels:
+      name: app-monitor
+      teste: label
+    name: app-monitor
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: app-monitor:latest
+    resources: {}
+    source:
+      git:
+        uri: http://gitlab-ce-devops.cloud.devops.org/rramalho/app-monitor.git
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: wildfly:latest
+      type: Docker
+    triggers:
+    - github:
+        secret: QzXGXgN8zJE78H2V4ESp
+      type: GitHub
+    - generic:
+        secret: eahfynvmblhWIc6E2LS9
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    labels:
+      name: app-monitor
+      teste: label
+    name: app-monitor
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: app-monitor
+      name: app-monitor
+      teste: label
+    strategy:
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          deploymentconfig: app-monitor
+          name: app-monitor
+          teste: label
+      spec:
+        containers:
+        - image: 172.30.187.93:5000/dev/app-monitor@sha256:79b83700b3ff61b02f24ef032073f6c106979c52afcf7b7f422560e7c0db0bb3
+          imagePullPolicy: Always
+          name: app-monitor
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - app-monitor
+        from:
+          kind: ImageStreamTag
+          name: app-monitor:latest
+      type: ImageChange
+  status: {}
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      openshift.io/deployer-pod.name: app-monitor-1-deploy
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: app-monitor
+      openshift.io/deployment.phase: Complete
+      openshift.io/encoded-deployment-config: '{"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"app-monitor","namespace":"dev","selfLink":"/oapi/v1/namespaces/dev/deploymentconfigs/app-monitor","uid":"e55c0f83-86de-11e5-9865-001c42c9c7b1","resourceVersion":"277492","creationTimestamp":"2015-11-09T12:39:19Z","labels":{"name":"app-monitor","teste":"label"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{}},"triggers":[{"type":"ConfigChange"},{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["app-monitor"],"from":{"kind":"ImageStreamTag","name":"app-monitor:latest"},"lastTriggeredImage":"172.30.187.93:5000/dev/app-monitor@sha256:79b83700b3ff61b02f24ef032073f6c106979c52afcf7b7f422560e7c0db0bb3"}}],"replicas":1,"selector":{"deploymentconfig":"app-monitor","name":"app-monitor","teste":"label"},"template":{"metadata":{"creationTimestamp":null,"labels":{"deploymentconfig":"app-monitor","name":"app-monitor","teste":"label"}},"spec":{"containers":[{"name":"app-monitor","image":"172.30.187.93:5000/dev/app-monitor@sha256:79b83700b3ff61b02f24ef032073f6c106979c52afcf7b7f422560e7c0db0bb3","ports":[{"containerPort":8080,"protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"Always"}],"restartPolicy":"Always","dnsPolicy":"ClusterFirst"}}},"status":{"latestVersion":1,"details":{"causes":[{"type":"ImageChange","imageTrigger":{"from":{"kind":"DockerImage","name":"172.30.187.93:5000/dev/app-monitor:latest"}}}]}}}'
+    creationTimestamp: null
+    generation: 1
+    labels:
+      name: app-monitor
+      openshift.io/deployment-config.name: app-monitor
+      teste: label
+    name: app-monitor-1
+  spec:
+    replicas: 1
+    selector:
+      deployment: app-monitor-1
+      deploymentconfig: app-monitor
+      name: app-monitor
+      teste: label
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "1"
+          openshift.io/deployment-config.name: app-monitor
+          openshift.io/deployment.name: app-monitor-1
+        creationTimestamp: null
+        labels:
+          deployment: app-monitor-1
+          deploymentconfig: app-monitor
+          name: app-monitor
+          teste: label
+      spec:
+        containers:
+        - image: 172.30.187.93:5000/dev/app-monitor@sha256:79b83700b3ff61b02f24ef032073f6c106979c52afcf7b7f422560e7c0db0bb3
+          imagePullPolicy: Always
+          name: app-monitor
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      openshift.io/host.generated: "true"
+    creationTimestamp: null
+    labels:
+      name: app-monitor
+      teste: label
+    name: app-monitor
+  spec:
+    host: app-monitor-dev.cloud.devops.org
+    to:
+      kind: Service
+      name: app-monitor
+  status: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    labels:
+      name: app-monitor
+      teste: label
+    name: app-monitor
+  spec:
+    ports:
+    - name: 8080-tcp
+      nodePort: 0
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      deploymentconfig: app-monitor
+      name: app-monitor
+      teste: label
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      openshift.io/build.name: app-monitor-1
+      openshift.io/scc: fabric8-fabric
+    creationTimestamp: null
+    labels:
+      openshift.io/build.name: app-monitor-1
+    name: app-monitor-1-build
+  spec:
+    containers:
+    - args:
+      - --loglevel=2
+      env:
+      - name: BUILD
+        value: '{"kind":"Build","apiVersion":"v1","metadata":{"name":"app-monitor-1","namespace":"dev","selfLink":"/oapi/v1/namespaces/dev/builds/app-monitor-1","uid":"e97698f9-86de-11e5-9865-001c42c9c7b1","resourceVersion":"277469","creationTimestamp":"2015-11-09T12:39:26Z","labels":{"buildconfig":"app-monitor","name":"app-monitor","teste":"label"},"annotations":{"openshift.io/build.number":"1"}},"spec":{"serviceAccount":"builder","source":{"type":"Git","git":{"uri":"http://gitlab-ce-devops.cloud.devops.org/rramalho/app-monitor.git"}},"strategy":{"type":"Docker","dockerStrategy":{"from":{"kind":"DockerImage","name":"jboss/wildfly@sha256:22d4ae17c6bb2417c2931ddf268f3482a822de73adf79390b392a4d77f53f08c"}}},"output":{"to":{"kind":"DockerImage","name":"172.30.187.93:5000/dev/app-monitor:latest"},"pushSecret":{"name":"builder-dockercfg-xza3r"}},"resources":{}},"status":{"phase":"Pending","config":{"kind":"BuildConfig","namespace":"dev","name":"app-monitor"}}}'
+      - name: BUILD_LOGLEVEL
+        value: "2"
+      - name: SOURCE_REPOSITORY
+        value: http://gitlab-ce-devops.cloud.devops.org/rramalho/app-monitor.git
+      - name: PUSH_DOCKERCFG_PATH
+        value: /var/run/secrets/openshift.io/push/.dockercfg
+      image: openshift3/ose-docker-builder:v3.0.2.0
+      imagePullPolicy: IfNotPresent
+      name: docker-build
+      resources: {}
+      securityContext:
+        privileged: true
+      terminationMessagePath: /dev/termination-log
+      volumeMounts:
+      - mountPath: /var/run/docker.sock
+        name: docker-socket
+      - mountPath: /var/run/secrets/openshift.io/push
+        name: builder-dockercfg-xza3r-push
+        readOnly: true
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: builder-token-j9okp
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    host: node02.devops.org
+    imagePullSecrets:
+    - name: builder-dockercfg-xza3r
+    nodeName: node02.devops.org
+    nodeSelector:
+      region: primary
+    restartPolicy: Never
+    serviceAccount: builder
+    serviceAccountName: builder
+    volumes:
+    - hostPath:
+        path: /var/run/docker.sock
+      name: docker-socket
+    - name: builder-dockercfg-xza3r-push
+      secret:
+        secretName: builder-dockercfg-xza3r
+    - name: builder-token-j9okp
+      secret:
+        secretName: builder-token-j9okp
+  status:
+    phase: Pending
