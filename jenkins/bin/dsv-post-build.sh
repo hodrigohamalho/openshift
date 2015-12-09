@@ -44,7 +44,9 @@ if [ -z "$BUILD_CONFIG" ]; then
   fi
 else
   echo "BuildConfig exists, starting a new build!"
+  echo "oc start-build ${BUILD_CONFIG}"
   BUILD_ID=$(oc start-build ${BUILD_CONFIG})
+  echo "BUILD ID: $BUILD_ID"
 fi
 
 echo "Waiting for build to start"
@@ -131,13 +133,13 @@ if [ $rc -ne 0 ]; then
 fi
 
 # scale up the test deployment
-RC_ID=`oc get rc | grep $APP_NAME | awk '{print $1}'`
+RC_ID=`oc get rc | grep $APP_NAME | awk '{print $1}' | tail -1`
 
 echo "Scaling up new deployment $test_rc_id"
 oc scale --replicas=1 rc $RC_ID
 
 
-echo "Checking for successful test deployment at $HOSTNAME"
+echo "Checking for successful test deployment at $APP_HOSTNAME"
 set +e
 rc=1
 count=0
