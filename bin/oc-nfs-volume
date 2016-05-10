@@ -8,7 +8,7 @@
 # 1. Directory to be create (every names, pv, pvc, nfs will be based on this name)
 # 2. Size in Gb
 # 3. Project in which pvc will be created
-# Usage: ./create-storage jenkis-storage 5 desenvolvimento
+# Usage: oc-nfs-volume jenkis-storage 5 desenvolvimento
 # NOTE: Execute this on your master machine.
 DIR=$1
 SIZE=$2
