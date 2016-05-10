@@ -13,3 +13,4 @@ oc delete bc --all
 oc delete build --all
 oc delete is --all
 oc delete dc --all
+oc delete rc --all

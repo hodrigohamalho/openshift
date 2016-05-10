@@ -1,5 +1,5 @@
 # @author Rodrigo Ramalho - hodrigohamalho@gmail.com / rramalho@redhat.com
-# @author Waldirio Pinheiro - waldirio@gmail.com / waldirio@redhat.com
+#                           waldirio@gmail.com / waldirio@redhat.com
 # This script creates:
 # - nfs directory
 # - persistence volume on openshift
