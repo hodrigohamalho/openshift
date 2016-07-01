@@ -1,0 +1,13 @@
+== GOGS
+
+  oc projects devops
+
+  oadm policy add-scc-to-user anyuid -z default
+
+Just to describe the above command, we are going to add a security constraint (or rather we are going to relax a default setting which would normally prohibit containers running as root). The -z in the command  indicates that we are going to add a capability to the service account (this is the user that by default is used to run containers within our current namespace – i.e. our project innovation-2016) and the command add the “run as any user” capability, i.e. we are no longer prohibited from running as root.
+
+So the container starting account (the service account) has now been granted the “anyuid” capability which means it can start as root and therefore perform chown/chomd and other root level commands. Of course, I would much rather that the container was changed to be able to run without requiring root permissions, but I am trying to run a pre-packaged image here.
+
+  oc new-app fabric8/gogs -e GOGS_SERVER__DOMAIN="cloud.devops.org",GOGS_SERVER__PROTOCOL="http",GOGS_SERVER__ROOT_URL="http://gogs-devops.cloud.devops.org",GOGS_WEBHOOK__DELIVER_TIMEOUT="5",GOGS_WEBHOOK__QUEUE_LENGTH="1000",GOGS_WEBHOOK__SKIP_TLS_VERIFY="true" -l app=gogs
+
+  oc expose service gogs
