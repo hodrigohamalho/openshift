@@ -13,8 +13,9 @@
 DIR=$1
 SIZE=$2
 PROJECT=$3
-ROOT_NFS=/var/export
+ROOT_NFS=/exports
 CLAIM_NAME=$4
+NFS_CONFIG_FILE=/etc/exports.d/openshift-ansible.exports
 # NFS Server Host
 HOST=$(hostname)
 
@@ -55,7 +56,7 @@ oc create -f -<< EOF
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: $CLAIM_NAME 
+  name: $CLAIM_NAME
 spec:
   accessModes:
     - ReadWriteOnce
@@ -86,12 +87,12 @@ fi
 chown -R nfsnobody: "$ROOT_NFS/$DIR"
 chmod 777 "$ROOT_NFS/$DIR"
 
-cont=$(grep "$ROOT_NFS/$DIR" /etc/exports|wc -l)
+cont=$(grep "$ROOT_NFS/$DIR" $NFS_CONFIG_FILE|wc -l)
 if [ $cont -eq 0 ]; then
-  echo "$ROOT_NFS/$DIR          *(rw,sync,no_root_squash)" >> /etc/exports
+  echo "$ROOT_NFS/$DIR          *(rw,root_squash)" >> $NFS_CONFIG_FILE
   exportfs -a
 else
-  echo "Directory $DIR already exists on /etc/exports. Skipping creation..."
+  echo "Directory $DIR already exists on $NFS_CONFIG_FILE. Skipping creation..."
 fi
 
 create-pv
